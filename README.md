@@ -3,18 +3,17 @@
 本記事では、[AWS Lambda](https://aws.amazon.com/jp/lambda/)と[CData Drivers](https://www.cdata.com/jp/drivers/)を使って、Twitterの特定ハッシュタグのツイート情報をサイボウズ社の[kintone](https://kintone.cybozu.com/jp/)に蓄積するアプリケーションを例に、サーバーレスなFaas(Function as a service)でマルチクラウド間のデータ連携を実現する方法をご紹介します。
 
 # アーキテクチャイメージ
-
 ![image.png](https://qiita-image-store.s3.amazonaws.com/0/123181/a77fc8ea-0d17-969d-f487-dbd773828272.png)
 
 # 本方式を活用した利用実績
 
-Twitterの特定ハッシュタグのツイート情報をkintoneに蓄積して、kintone上でランダムで当選者を抽出する本アプリケーションを利用して、イベントのハッシュタグをつけてツイートするだけで応募できる抽選会アプリを作成して、これまで下記のIT系のイベントでSNSを盛り上げ、イベントを楽しんでもらう企画として抽選会を行ってきました。
+イベントのハッシュタグをつけてツイートするだけで応募できる抽選会アプリを作成して、これまで下記のIT系のイベントにて、SNSを盛り上げイベントを楽しんでもらう企画として抽選会を実施してきました。
 
 - kintone devCamp 2017 ( https://kintonedevcamp.qloba.com/ )
 - 仙台IT文化祭 2017 ( http://2017.sendaiitfes.org/ )
 - JJUG CCC 2017 Fall ( http://www.java-users.jp/ccc2017fall/ )　※スポンサーLT枠にて実施
 
-そのなかでも仙台IT文化祭は、2日間で累計約700名が来場したイベントで、豪華景品ということもあり、ハッシュタグ「#sendaiitfes」で約5400ツイートを集めて、その中から抽選を行いました。
+仙台IT文化祭では、2日間で累計約700名が来場したイベントで、景品が超豪華だったということもあり、ハッシュタグ「#sendaiitfes」でなんと**約5400ツイート**を集めました。
 イベントブログ記事: ( http://www.cdata.com/jp/blog/News/20171031-sendaiitfes )
 
 kintone上で作成した抽選会アプリ
@@ -27,11 +26,11 @@ kintone上で作成した抽選会アプリ
 TwitterおよびkintoneはREST APIでのデータ連携インタフェースを持っています。ただし、これらのAPIを通じてデータを連携させるには、それぞれのAPI仕様を理解する必要があります。
 - [kintoneのAPI仕様書](https://developer.cybozu.io/hc/ja/articles/201941754)
 - [TwitterのAPI仕様書](https://developer.twitter.com/en/docs)
-本アプリケーションでは、各クラウドサービスが公開するAPIを標準化してSQLとして利用できる[CData JDBC Drivers製品](http://www.cdata.com/jp/jdbc/)を利用しています。それによりTwitterのツイート情報をSQLのSelect構文でアクセスして、kintoneにInsert構文でデータを取り込むといった処理をSQLという共通言語でハンドリングするシンプルなデータ連携Faasを作成することが出来ました。
+本方式では、各クラウドサービスが公開するAPIを標準化してJDBCの規格でSQLとしてアクセスできる[CData JDBC Drivers製品](http://www.cdata.com/jp/jdbc/)を利用しています。それによりTwitterのツイート情報をSQLのSelect構文で取得して、kintoneにInsert構文でデータを取り込むといった処理をSQLという共通言語で行うことでシンプルなデータ連携Faasとして作成することが出来ます。
 
-## サンプルJavaコード
+## サンプルコード
 
-本アプリケーションでは、JavaのプログラムからJDBC経由でTwitterおよびkintoneへアクセスしています。サンプルのJavaコードは以下のGitHubからもダウンロードできます。
+JavaのプログラムからJDBC経由でTwitterおよびkintoneへアクセスしています。サンプルのJavaコードは以下のGitHubからもダウンロードできます。
 [Twitter2Kintone.java](https://github.com/kuwazzy/Twitter2Kintone/blob/master/code/java/Twitter2Kintone.java)
 
 ```Twitter2Kintone.java
@@ -115,8 +114,7 @@ public class Twitter2Kintone{
 
 ```
 
-主要なパートについて説明します。
-まず初めに、kintoneとTwitterに接続するためのJDBCの接続URL、および、蓄積するkintoneのアプリ名、Twitterのハッシュタグを設定します。
+コード内の主要パートについて説明します。まず初めに、kintoneとTwitterに接続するためのJDBCの接続URL、および、蓄積するkintoneのアプリ名、Twitterのハッシュタグを設定します。今回は例として「#qiita」をつけてツイートしている情報としました。
 
 ```Twitter2Kintone(static).java
 	public static String UrlKintone = "jdbc:kintone:URL=https://****.cybozu.com;User=****;Password=****;RTK=****;";
@@ -129,9 +127,9 @@ kintoneおよびTwitterへの接続URLの設定例は以下のCData社の製品�
 
 - [CData JDBC Driver for kintone 2017J]( http://cdn.cdata.com/help/LKC/jdbc/pg_connectionj.htm )
 - [CData JDBC Driver for Twitter 2017J](http://cdn.cdata.com/help/GTC/jdbc/pg_connectingtotwitter.htm)
+※Lambdaなどのサーバーレス環境で動作させるにはJDBCのURLにRTK（RunTimeKey）が必要となります。取得方法は[CDataサポート](http://www.cdata.com/jp/support/)よりお問い合わせください。
 
 KintoneDriverとTwitterDriverクラスを呼び出し、それぞれのSaasに接続するコネクションを作成します。
-
 ```Twitter2Kintone(connection).java
 			//Connection for kintone
 			Class.forName("cdata.jdbc.kintone.KintoneDriver");
@@ -201,10 +199,11 @@ AWS Lambdaは、Javaコードおよび、JDBCのJarファイルを含めた形�
 ## kintoneアプリの準備
 
 ツイート情報を蓄積するためのkintoneアプリを作成します。
-![image.png](https://qiita-image-store.s3.amazonaws.com/0/123181/31f37c92-5a29-232d-e354-a292c5546edc.png)
+![image.png](https://qiita-image-store.s3.amazonaws.com/0/123181/ba241e98-8ea0-dad0-005d-8fa360863bb0.png)
 
-アプリテンプレートをこちらのパスに格納しておりますのでご利用ください。
-[Twitter2Kintone.zip](https://github.com/kuwazzy/Twitter2Kintone/blob/master/code/kintone_template/Twitter2Kintone.zip)
+アプリテンプレートをこちらのパスに格納しておりますのでインポートしてご利用ください。
+
+- [Twitter2Kintone.zip](https://github.com/kuwazzy/Twitter2Kintone/blob/master/code/kintone_template/Twitter2Kintone.zip)
 
 本アプリでは、２つのJavascriptライブラリを利用しています。下記のページよりダウンロードして「JavaScript / CSSでカスタマイズ」に追加してください。
 
@@ -224,6 +223,8 @@ AWS Lambdaは、Javaコードおよび、JDBCのJarファイルを含めた形�
 「抽選タイム！」ボタンをクリックすると、当選者がダイアログとして表示されるようになります。これは、全ツイート内容の中からランダム関数を使って抽出しているのでツイート数が多い人が抽出される確率が上がります。ですので、「ツイートすればするほど当選確率があがる」とイベント企画のなかで事前に言っておくと、SNS上も盛り上がりますね！！
 
 
+# まとめ
 
-
-
+AWS Lambdaで実現するデータ連携FaaS(Function As A Service)の実現手順でした。本記事では、Twitterからkintoneへの連携でしたが、Saas連携のところで利用している[CData JDBC Driver](http://www.cdata.com/jp/jdbc/)は約90を超える様々なデータソースへJDBCなどの規格のもとSQLでアクセスできますので、本方式でサーバーレスアーキテクチャで様々なSaas間連携ができるようになります。
+![image.png](https://qiita-image-store.s3.amazonaws.com/0/123181/a79fda49-f81e-cbc0-c03e-cce203cc7460.png)
+本手順で使用している[CData JDBC Driver](http://www.cdata.com/jp/jdbc/)は30日間の無償評価版もございますので是非お試してください。
