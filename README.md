@@ -131,6 +131,7 @@ kintoneおよびTwitterへの接続URLの設定例は以下のCData社の製品�
 ※Lambdaなどのサーバーレス環境で動作させるにはJDBCのURLにRTK（RunTimeKey）が必要となります。取得方法は[CDataサポート](http://www.cdata.com/jp/support/)よりお問い合わせください。
 
 KintoneDriverとTwitterDriverクラスを呼び出し、それぞれのSaasに接続するコネクションを作成します。
+
 ```Twitter2Kintone(connection).java
 			//Connection for kintone
 			Class.forName("cdata.jdbc.kintone.KintoneDriver");
@@ -206,9 +207,11 @@ AWS Lambdaは、Javaコードおよび、JDBCのJarファイルを含めた形�
 
 - [Twitter2Kintone.zip](https://github.com/kuwazzy/Twitter2Kintone/blob/master/code/kintone_template/Twitter2Kintone.zip)
 
-本アプリでは、２つのJavascriptライブラリを利用しています。下記のページよりダウンロードして「JavaScript / CSSでカスタマイズ」に追加してください。
+本アプリでは、２つのJavascriptライブラリとCSSを利用しています。下記のページよりダウンロードして「JavaScript / CSSでカスタマイズ」に追加してください。
 
-- [sweetalert.min.js](https://js.cybozu.com/sweetalert/v1.1.3/sweetalert.min.js) 　※[株式会社ジョイゾー社が作成](https://developer.cybozu.io/hc/ja/articles/204790870-SweetAlert-%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6-%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E3%82%92%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AA%E3%83%83%E3%82%B7%E3%83%A5%E3%81%AB%E8%A1%A8%E7%A4%BA%E3%81%95%E3%81%9B%E3%82%88%E3%81%86-)
+- [sweetalert.min.js](https://js.cybozu.com/sweetalert/v1.1.3/sweetalert.min.js) 
+- [sweetalert.css](https://js.cybozu.com/sweetalert/v1.1.3/sweetalert.css)
+　※[株式会社ジョイゾー社が作成](https://developer.cybozu.io/hc/ja/articles/204790870-SweetAlert-%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6-%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E3%82%92%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AA%E3%83%83%E3%82%B7%E3%83%A5%E3%81%AB%E8%A1%A8%E7%A4%BA%E3%81%95%E3%81%9B%E3%82%88%E3%81%86-)
 - [random_lottery.js](https://github.com/kuwazzy/Twitter2Kintone/blob/master/code/js/random_lottery.js)　※サイボウズ社が作成
 
 ![image.png](https://qiita-image-store.s3.amazonaws.com/0/123181/319c0820-1dfe-2bb5-cb64-daeaa816c821.png)
