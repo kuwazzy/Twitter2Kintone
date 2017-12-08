@@ -127,6 +127,7 @@ kintoneおよびTwitterへの接続URLの設定例は以下のCData社の製品�
 
 - [CData JDBC Driver for kintone 2017J]( http://cdn.cdata.com/help/LKC/jdbc/pg_connectionj.htm )
 - [CData JDBC Driver for Twitter 2017J](http://cdn.cdata.com/help/GTC/jdbc/pg_connectingtotwitter.htm)
+
 ※Lambdaなどのサーバーレス環境で動作させるにはJDBCのURLにRTK（RunTimeKey）が必要となります。取得方法は[CDataサポート](http://www.cdata.com/jp/support/)よりお問い合わせください。
 
 KintoneDriverとTwitterDriverクラスを呼び出し、それぞれのSaasに接続するコネクションを作成します。
